@@ -3,6 +3,6 @@ module.exports.restrict = function (req, res, next) {
     next();
   } else {
     req.session.error = "Access denied!";
-    res.status(400).send("Access denied!");
+    res.status(401).send("Access denied!");
   }
 };

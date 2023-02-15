@@ -5,8 +5,10 @@ const userForm = new mongoose.Schema({
   lname: { type: String, min: 3, max: 255, required: true },
   email: { type: String, min: 6, max: 255, required: true },
   password: { type: String, min: 6, max: 255, required: true },
-  salt: { type: String },
-  hash: { type: String },
+  salt: { type: String, required: true },
+  hash: { type: String, required: true },
+  isActive: { type: Boolean, required: true },
+  secretKey: { type: String, min: 4, max: 10 },
 });
 
 module.exports = mongoose.model("User", userForm);

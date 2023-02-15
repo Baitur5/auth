@@ -8,8 +8,8 @@ const validateAsync = (schema) => {
       .catch((err) => {
         res.status(400).send(err.details[0].message);
         console.log("Validation error");
+        return;
       });
-    // next();
   };
 };
 
