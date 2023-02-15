@@ -1,10 +1,12 @@
 "use strict";
+
+require("dotenv").config();
 var express = require("express");
 var session = require("express-session");
 var mongoose = require("mongoose");
 
 var app = express();
-const dbURL = "mongodb://localhost:27017/auth_jwt";
+const dbURL = process.env.DB_URL;
 
 app.use(express.json());
 
