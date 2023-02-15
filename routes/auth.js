@@ -58,7 +58,7 @@ router.post(
       var mailOptions = {
         from: process.env.EMAIL,
         to: req.body.email,
-        subject: "Code to confirm your account",
+        subject: "Code to activate your account",
         text: randomString,
       };
 
@@ -78,7 +78,7 @@ router.post(
         } else {
           await user.save();
 
-          res.status(200).send("Check your email for confirmation code!");
+          res.status(200).send("Check your email for activation code!");
         }
       });
     } catch (error) {
@@ -99,8 +99,9 @@ router.post(
         res.status(400).send("Your account is already activated!");
         return;
       }
-
-      if (!user || user.secretKey !== req.secretKey) {
+      console.log(user);
+      console.log(req.secretKey);
+      if (!user || user.secretKey !== req.body.secretKey) {
         res.status(400).send("Invalid email or secret code!");
         return;
       }
@@ -110,6 +111,52 @@ router.post(
         { $set: { isActive: true, secretKey: "" } }
       );
       res.status(201).send("Your account activated");
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+);
+
+router.post(
+  "/send_activation",
+  validateAsync(forgotSchema),
+  async (req, res) => {
+    try {
+      const emailExist = await User.findOne({ email: req.body.email });
+
+      if (!emailExist) {
+        res.status(400).send("Email doesn't exist!");
+        return;
+      }
+
+      if (emailExist.isActive) {
+        res.status(400).send("Email already activated");
+        return;
+      }
+      let randomString = Math.random().toString(36).substring(2, 8);
+
+      var mailOptions = {
+        from: process.env.EMAIL,
+        to: req.body.email,
+        subject: "Code to activate your account",
+        text: randomString,
+      };
+
+      transporter.sendMail(mailOptions, async function (error, info) {
+        if (error) {
+          throw new Error("Mail error");
+        } else {
+          await User.updateOne(
+            { email: emailExist.email },
+            { $set: { secretKey: randomString } }
+          );
+          console.log("Email has been sent");
+        }
+      });
+
+      res
+        .status(200)
+        .send("Activation code has been sent to your email,please check it!");
     } catch (error) {
       res.status(500).send(error);
     }
@@ -251,9 +298,8 @@ router.post("/reset", validateAsync(resetSchema), async (req, res) => {
 router.get("/all", restrict, (req, res) => {
   try {
     User.find({}, { salt: 0, hash: 0, _id: 0, __v: 0 }, (err, result) => {
-      res.send(result);
+      res.status(200).send(result);
     });
-    res.sendStatus(200);
   } catch (error) {
     res.status(500).send(error);
   }
