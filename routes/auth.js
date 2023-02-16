@@ -23,14 +23,13 @@ const transporter = require("../services/mail");
 async function authenticate(res, email, pass, fn) {
   var user = await User.findOne({ email: email, password: pass });
   if (!user) return fn(null, null);
+  
   if (user.isActive === false) {
     res.status(400).send("Please confirm your account before signing in!");
     return;
   }
   hasher({ password: pass, salt: user.salt }, function (err, pass, salt, hash) {
     if (err) return fn(err);
-    console.log("h");
-    console.log(user);
     if (hash === user.hash) return fn(null, user);
     fn(null, null);
   });
@@ -72,6 +71,7 @@ router.post(
         isActive: false,
         secretKey: randomString,
       });
+
       transporter.sendMail(mailOptions, async function (error, info) {
         if (error) {
           throw new Error("Mail error");
@@ -95,12 +95,12 @@ router.post(
       var user = await User.findOne({
         email: req.body.email,
       });
+      
       if (user && user.isActive) {
         res.status(400).send("Your account is already activated!");
         return;
       }
-      console.log(user);
-      console.log(req.secretKey);
+      
       if (!user || user.secretKey !== req.body.secretKey) {
         res.status(400).send("Invalid email or secret code!");
         return;
@@ -110,6 +110,7 @@ router.post(
         { email: user.email, secretKey: req.body.secretKey },
         { $set: { isActive: true, secretKey: "" } }
       );
+
       res.status(201).send("Your account activated");
     } catch (error) {
       res.status(500).send(error);

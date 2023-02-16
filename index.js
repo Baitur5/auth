@@ -14,13 +14,14 @@ app.use(
   session({
     resave: false,
     saveUninitialized: false,
-    secret: "secret key",
+    secret: process.env.SECRET_KEY,
   })
 );
 
 const router = require("./routes/auth");
 
 app.use("/api/", router);
+
 mongoose.connect(
   dbURL,
   { useNewUrlParser: true, useUnifiedTopology: true },
@@ -28,6 +29,8 @@ mongoose.connect(
     console.log("Database started");
   }
 );
+ 
 app.listen(3000, () => {
   console.log("Server started");
 });
+
