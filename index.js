@@ -1,36 +1,39 @@
 "use strict";
 
-require("dotenv").config();
-var express = require("express");
-var session = require("express-session");
-var mongoose = require("mongoose");
 
-var app = express();
-const dbURL = process.env.DB_URL;
+if (require.main === module) {
+    require("dotenv").config();
+    var express = require("express");
+    var session = require("express-session");
+    var mongoose = require("mongoose");
 
-app.use(express.json());
+    var app = express();
+    const dbURL = process.env.DB_URL;
 
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.SECRET_KEY,
-  })
-);
+    app.use(express.json());
 
-const router = require("./routes/auth");
+    app.use(
+        session({
+            resave: false,
+            saveUninitialized: false,
+            secret: process.env.SECRET_KEY,
+        })
+    );
 
-app.use("/api/", router);
+    const { router } = require("./routes/auth");
 
-mongoose.connect(
-  dbURL,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => {
-    console.log("Database started");
-  }
-);
- 
-app.listen(3000, () => {
-  console.log("Server started");
-});
+    app.use("/api/", router);
+    mongoose.connect(
+        dbURL,
+        { useNewUrlParser: true, useUnifiedTopology: true },
+        () => {
+            console.log("Database started");
+        }
+    );
+
+    app.listen(3000, () => {
+        console.log("Server started");
+    });
+} else {
+}
 
