@@ -35,5 +35,6 @@ if (require.main === module) {
         console.log("Server started");
     });
 } else {
+    console.log("Called")
 }
 
