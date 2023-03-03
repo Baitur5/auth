@@ -1,6 +1,8 @@
-"use strict";
 
 
+
+
+const { router } = require("./routes/auth");
 if (require.main === module) {
     require("dotenv").config();
     var express = require("express");
@@ -20,7 +22,6 @@ if (require.main === module) {
         })
     );
 
-    const { router } = require("./routes/auth");
 
     app.use("/api/", router);
     mongoose.connect(
@@ -35,6 +36,15 @@ if (require.main === module) {
         console.log("Server started");
     });
 } else {
-    console.log("Called")
+    const { User } = require("./models/User")
+    const { restrict } = require("./middlewares/restrict")
+    const { validateAsync } = require("./middlewares/validate")
+    module.exports = {
+        router,
+        User,
+        restrict,
+        validateAsync
+    }
+    console.log("Auth Called")
 }
 
