@@ -65,6 +65,7 @@ router.post(
                 fname: req.body.fname,
                 lname: req.body.lname,
                 email: req.body.email,
+                isAdmin:req.body.isAdmin,
                 password: req.body.password,
                 salt: salt,
                 hash: hash,
