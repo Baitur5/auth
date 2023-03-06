@@ -8,7 +8,7 @@ const userForm = new mongoose.Schema({
     salt: { type: String, required: true },
     hash: { type: String, required: true },
     isActive: { type: Boolean, required: true },
-    isAdmin: { type: Boolean, default: false,required:true },
+    isAdmin: { type: Boolean, default: false, required: true },
     secretKey: { type: String, min: 4, max: 10 },
 });
 const User = mongoose.model("User", userForm);

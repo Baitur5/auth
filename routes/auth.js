@@ -3,7 +3,7 @@ const router = require("express").Router();
 var pbpassword = require("pbkdf2-password");
 var hasher = pbpassword();
 
-const User = require("../models/User");
+const { User } = require("../models/User");
 
 const {
     registerSchema,
@@ -65,7 +65,7 @@ router.post(
                 fname: req.body.fname,
                 lname: req.body.lname,
                 email: req.body.email,
-                isAdmin:req.body.isAdmin,
+                isAdmin: req.body.isAdmin,
                 password: req.body.password,
                 salt: salt,
                 hash: hash,
