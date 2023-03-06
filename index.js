@@ -37,12 +37,13 @@ if (require.main === module) {
     });
 } else {
     const { User } = require("./models/User")
-    const { restrict } = require("./middlewares/restrict")
+    const { restrict,restrictAdmin } = require("./middlewares/restrict")
     const { validateAsync } = require("./middlewares/validate")
     module.exports = {
         router,
         User,
         restrict,
+        restrictAdmin,
         validateAsync
     }
     console.log("Auth Called")
