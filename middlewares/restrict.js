@@ -8,7 +8,7 @@ const restrict = function(req, res, next) {
 };
 
 const restrictAdmin = function(req, res, next) {
-    if (typeof req.session.user.isAdmin !=="undefined" && req.session.user.isAdmin) {
+    if (req.session.user && req.session.user.isAdmin) {
         next();
     } else {
         req.session.error = "Access denied!";
